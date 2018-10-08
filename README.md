@@ -1,4 +1,4 @@
-# Antarest SQL
+# Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
 __v1.0.0__:
