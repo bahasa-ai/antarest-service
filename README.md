@@ -10,7 +10,8 @@ Config object for initilaize:
 config: {
     baseUrl: 'http://your-baseUrl.com:1234'
     url?: 'your-additional-url'
-    isSQL: false // database model
+    isSQL: false // database model,
+    timeout?: 7777
 }
 ```
 
