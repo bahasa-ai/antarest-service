@@ -26,7 +26,8 @@ export interface Patcher {
 export interface Config {
   baseUrl: string,
   url?: string,
-  isSQL: boolean
+  isSQL: boolean,
+  timeout?: number
 }
 
 export default class AntarestService<T> {
@@ -46,7 +47,8 @@ export default class AntarestService<T> {
       headers: {
         Accept: 'application/json',
         'Content-type': 'application/json'
-      }
+      },
+      timeout: config.timeout ? config.timeout : 6666
     })
   }
 
