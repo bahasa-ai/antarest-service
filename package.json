@@ -1,0 +1,32 @@
+{
+  "name": "antarest-service",
+  "version": "1.0.0",
+  "description": "Service enable antarest and antarest-sql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "tslint -c tslint.json -p tsconfig.json",
+    "build": "tsc --target es5 --lib es2015 index.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bahasa-ai/antarest-service.git"
+  },
+  "keywords": [
+    "Service",
+    "Enabler"
+  ],
+  "author": "Arif Budiman <budi@bahasa.ai> (bahasa-ai)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bahasa-ai/antarest-service/issues"
+  },
+  "homepage": "https://github.com/bahasa-ai/antarest-service#readme",
+  "devDependencies": {
+    "tslint": "^5.11.0",
+    "typescript": "^3.1.1"
+  },
+  "dependencies": {
+    "axios": "^0.18.0"
+  }
+}
