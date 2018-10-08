@@ -1,5 +1,5 @@
 # Antarest SQL
-Simple enabler for antarest and antarest-sql
+Simple enabler for [a antarest](https://github.com/bahasa-ai/antarest) [a antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
 __v1.0.0__:
 - Initial release
