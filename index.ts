@@ -1,4 +1,3 @@
-import { AntarestResult } from './index';
 import Axios, { AxiosPromise, AxiosInstance } from 'axios'
 
 export interface AntarestResult<T> {
