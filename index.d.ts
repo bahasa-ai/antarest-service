@@ -39,6 +39,4 @@ export default class AntarestService<T> {
     deleteById(id: number | string): Promise<AntarestResult<T>>;
     query(query: object): Promise<AntarestResult<T[]>>;
     aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>>;
-    private getOptionsId;
-    private ResultHelper;
 }

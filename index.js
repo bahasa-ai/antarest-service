@@ -36,6 +36,50 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
+function ResultHanlder(promise, isList) {
+    return __awaiter(this, void 0, void 0, function () {
+        var p, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, promise];
+                case 1:
+                    p = _a.sent();
+                    if (p.status === 200) {
+                        return [2 /*return*/, {
+                                status: p.data.status,
+                                message: p.data.msg,
+                                payload: isList ? p.data.payload : p.data.payload[0]
+                            }];
+                    }
+                    return [2 /*return*/, {
+                            status: p.status,
+                            message: p.statusText,
+                            payload: undefined
+                        }];
+                case 2:
+                    error_1 = _a.sent();
+                    return [2 /*return*/, {
+                            status: 500,
+                            message: 'Unexpected request error',
+                            payload: undefined
+                        }];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+function getOptionsId(id, isSQL) {
+    var options;
+    if (this._isSQL) { // SQL
+        options = { 'id': { '$eq': id } };
+    }
+    else { // mongoose
+        options = { '_id': { '$eq': id } };
+    }
+    return options;
+}
 var AntarestService = /** @class */ (function () {
     function AntarestService(config) {
         this._baseUrl = config.baseUrl;
@@ -46,9 +90,11 @@ var AntarestService = /** @class */ (function () {
             headers: {
                 Accept: 'application/json',
                 'Content-type': 'application/json'
-            }
+            },
+            timeout: config.timeout ? config.timeout : 6666
         });
     }
+    // Common method
     AntarestService.prototype.create = function (objectType) {
         return __awaiter(this, void 0, void 0, function () {
             var promise;
@@ -56,7 +102,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.post(this._url, objectType);
-                        return [4 /*yield*/, this.ResultHelper(promise, false)];
+                        return [4 /*yield*/, ResultHanlder(promise, false)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -74,7 +120,7 @@ var AntarestService = /** @class */ (function () {
                         else {
                             promise = this._server.get(this._url);
                         }
-                        return [4 /*yield*/, this.ResultHelper(promise, true)];
+                        return [4 /*yield*/, ResultHanlder(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -85,7 +131,7 @@ var AntarestService = /** @class */ (function () {
             var promise;
             return __generator(this, function (_a) {
                 promise = this._server.patch(this._url, { conditions: conditions, patch: patch });
-                return [2 /*return*/, this.ResultHelper(promise, true)];
+                return [2 /*return*/, ResultHanlder(promise, true)];
             });
         });
     };
@@ -96,7 +142,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: Date.now() } });
-                        return [4 /*yield*/, this.ResultHelper(promise, true)];
+                        return [4 /*yield*/, ResultHanlder(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -108,7 +154,7 @@ var AntarestService = /** @class */ (function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.get(this.getOptionsId(id))];
+                    case 0: return [4 /*yield*/, this.get(getOptionsId(id, this._isSQL))];
                     case 1:
                         promise = _a.sent();
                         return [2 /*return*/, {
@@ -125,7 +171,7 @@ var AntarestService = /** @class */ (function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.update(this.getOptionsId(id), patch)];
+                    case 0: return [4 /*yield*/, this.update(getOptionsId(id, this._isSQL), patch)];
                     case 1:
                         promise = _a.sent();
                         return [2 /*return*/, {
@@ -142,7 +188,7 @@ var AntarestService = /** @class */ (function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.delete(this.getOptionsId(id))];
+                    case 0: return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL))];
                     case 1:
                         promise = _a.sent();
                         return [2 /*return*/, {
@@ -169,7 +215,7 @@ var AntarestService = /** @class */ (function () {
                                 }];
                         }
                         promise = this._server.post(this._url, query);
-                        return [4 /*yield*/, this.ResultHelper(promise, true)];
+                        return [4 /*yield*/, ResultHanlder(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -190,43 +236,8 @@ var AntarestService = /** @class */ (function () {
                                 }];
                         }
                         promise = this._server.post(this._url, aggregator);
-                        return [4 /*yield*/, this.ResultHelper(promise, true)];
+                        return [4 /*yield*/, ResultHanlder(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
-                }
-            });
-        });
-    };
-    // Helper
-    AntarestService.prototype.getOptionsId = function (id) {
-        var options;
-        if (this._isSQL) { // SQL
-            options = { 'id': { '$eq': id } };
-        }
-        else { // mongoose
-            options = { '_id': { '$eq': id } };
-        }
-        return options;
-    };
-    AntarestService.prototype.ResultHelper = function (promise, isList) {
-        return __awaiter(this, void 0, void 0, function () {
-            var p;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, promise];
-                    case 1:
-                        p = _a.sent();
-                        if (p.status === 200) {
-                            return [2 /*return*/, {
-                                    status: p.data.status,
-                                    message: p.data.msg,
-                                    payload: isList ? p.data.payload : p.data.payload[0]
-                                }];
-                        }
-                        return [2 /*return*/, {
-                                status: p.status,
-                                message: p.statusText,
-                                payload: undefined
-                            }];
                 }
             });
         });

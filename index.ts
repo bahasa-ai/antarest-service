@@ -1,3 +1,4 @@
+import { AntarestResult } from './index';
 import Axios, { AxiosPromise, AxiosInstance } from 'axios'
 
 export interface AntarestResult<T> {
@@ -71,7 +72,6 @@ function getOptionsId(id: string | number, isSQL: boolean) {
 
 export default class AntarestService<T> {
   private _isSQL: boolean
-
   protected _server: AxiosInstance
   protected _baseUrl: string
   protected _url: string
@@ -91,6 +91,7 @@ export default class AntarestService<T> {
     })
   }
 
+  // Common method
   public async create(objectType: T): Promise<AntarestResult<T>> {
     const promise = this._server.post(this._url, objectType)
     return await ResultHanlder(promise, false)
