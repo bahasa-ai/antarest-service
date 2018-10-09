@@ -30,6 +30,45 @@ export interface Config {
   timeout?: number
 }
 
+async function ResultHanlder(promise: AxiosPromise<any>, isList: boolean) {
+  let p
+
+  try {
+    p = await promise
+    if (p.status === 200) {
+      return {
+        status: p.data.status,
+        message: p.data.msg,
+        payload: isList ? p.data.payload : p.data.payload[0]
+      }
+    }
+
+    return {
+      status: p.status,
+      message: p.statusText,
+      payload: undefined
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      message: 'Unexpected request error',
+      payload: undefined
+    }
+  }
+}
+
+function getOptionsId(id: string | number, isSQL: boolean) {
+  let options
+
+  if (this._isSQL) { // SQL
+    options = { 'id': { '$eq': id } }
+  } else { // mongoose
+    options = { '_id': { '$eq': id } }
+  }
+
+  return options
+}
+
 export default class AntarestService<T> {
   private _isSQL: boolean
 
@@ -54,7 +93,7 @@ export default class AntarestService<T> {
 
   public async create(objectType: T): Promise<AntarestResult<T>> {
     const promise = this._server.post(this._url, objectType)
-    return await this.ResultHelper(promise, false)
+    return await ResultHanlder(promise, false)
   }
 
   public async get(options?: Comparator): Promise<AntarestResult<T[]>> {
@@ -66,22 +105,22 @@ export default class AntarestService<T> {
       promise = this._server.get(this._url)
     }
 
-    return await this.ResultHelper(promise, true)
+    return await ResultHanlder(promise, true)
   }
 
   public async update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>> {
     const promise = this._server.patch(this._url, { conditions, patch })
-    return this.ResultHelper(promise, true)
+    return ResultHanlder(promise, true)
   }
 
   public async delete(conditions: Comparator): Promise<AntarestResult<T[]>> {
     const promise = this._server.patch(this._url, { conditions, patch: { deletedAt: Date.now() } })
-    return await this.ResultHelper(promise, true)
+    return await ResultHanlder(promise, true)
   }
 
   // Manipulate by Id
   public async getById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.get(this.getOptionsId(id))
+    const promise = await this.get(getOptionsId(id, this._isSQL))
 
     return {
       status: promise.status,
@@ -91,7 +130,7 @@ export default class AntarestService<T> {
   }
 
   public async updateById(id: number | string, patch: object): Promise<AntarestResult<T>> {
-    const promise = await this.update(this.getOptionsId(id), patch)
+    const promise = await this.update(getOptionsId(id, this._isSQL), patch)
 
     return {
       status: promise.status,
@@ -101,7 +140,7 @@ export default class AntarestService<T> {
   }
 
   public async deleteById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.delete(this.getOptionsId(id))
+    const promise = await this.delete(getOptionsId(id, this._isSQL))
 
     return {
       status: promise.status,
@@ -122,7 +161,7 @@ export default class AntarestService<T> {
 
     const promise = this._server.post(this._url, query)
 
-    return await this.ResultHelper(promise, true)
+    return await ResultHanlder(promise, true)
   }
 
   // Specific noSQL function
@@ -137,38 +176,6 @@ export default class AntarestService<T> {
 
     const promise = this._server.post(this._url, aggregator)
 
-    return await this.ResultHelper(promise, true)
+    return await ResultHanlder(promise, true)
   }
-
-  // Helper
-  private getOptionsId(id: number | string): Comparator {
-    let options
-
-    if (this._isSQL) { // SQL
-      options = { 'id': { '$eq': id } }
-    } else { // mongoose
-      options = { '_id': { '$eq': id } }
-    }
-
-    return options
-  }
-
-  private async ResultHelper(promise: AxiosPromise<any>, isList: boolean) {
-    const p = await promise
-    if (p.status === 200) {
-      return {
-        status: p.data.status,
-        message: p.data.msg,
-        payload: isList ? p.data.payload : p.data.payload[0]
-      }
-    }
-
-    return {
-      status: p.status,
-      message: p.statusText,
-      payload: undefined
-    }
-  }
-
-
 }
