@@ -25,7 +25,10 @@ export type Config = {
     type: AntarestType,
     timeout?: number
 }
-export type AntarestType = 'antarest' | 'antarest-sql'
+export type Query = {
+    query: string
+}
+export type AntarestType = 'antarest' | 'antarest-sql' | 'other'
 export default class AntarestService<T> {
     private _isSQL;
     protected _server: AxiosInstance;

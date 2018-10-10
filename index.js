@@ -72,7 +72,7 @@ function ResultHanlder(promise, isList) {
 }
 function getOptionsId(id, isSQL) {
     var options;
-    if (this._isSQL) { // SQL
+    if (isSQL) { // PosgrestSQL
         options = { 'id': { '$eq': id } };
     }
     else { // mongoose
@@ -85,6 +85,7 @@ var AntarestService = /** @class */ (function () {
         this._baseUrl = config.baseUrl;
         this._url = config.url ? config.url : '';
         this._isSQL = config.isSQL;
+        this._type = config.type;
         this._server = axios_1.default.create({
             baseURL: this._baseUrl,
             headers: {
@@ -207,7 +208,7 @@ var AntarestService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (!this._isSQL) {
+                        if (this._type === 'antarest-sql' || this._type === 'other') {
                             return [2 /*return*/, {
                                     status: 403,
                                     message: 'Forbidden operation for SQL database',
@@ -228,7 +229,7 @@ var AntarestService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this._isSQL) {
+                        if (this._type === 'antarest' || this._type === 'other') {
                             return [2 /*return*/, {
                                     status: 403,
                                     message: 'Forbidden operation for noSQL database',
