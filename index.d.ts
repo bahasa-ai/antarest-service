@@ -23,6 +23,7 @@ export type Config = {
     baseUrl: string;
     url?: string;
     type: AntarestType,
+    isSQL: boolean,
     timeout?: number
 }
 export type Query = {

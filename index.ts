@@ -163,7 +163,7 @@ export default class AntarestService<T> {
     if (this._type === 'antarest-sql' || this._type === 'other') {
       return {
         status: 403,
-        message: 'Forbidden operation for SQL database',
+        message: 'Forbidden operation for SQL database or Other Service',
         payload: undefined
       }
     }
@@ -178,7 +178,7 @@ export default class AntarestService<T> {
     if (this._type === 'antarest' || this._type === 'other') {
       return {
         status: 403,
-        message: 'Forbidden operation for noSQL database',
+        message: 'Forbidden operation for noSQL database or Other Service',
         payload: undefined
       }
     }
