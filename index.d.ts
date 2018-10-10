@@ -1,10 +1,10 @@
 import { AxiosInstance } from 'axios';
-export interface AntarestResult<T> {
+export type AntarestResult<T> = {
     status: number;
     message: string;
     payload?: T;
 }
-export interface Comparator {
+export type Comparator = {
     [field: string]: {
         $eq?: string | number | boolean;
         $gt?: number;
@@ -16,14 +16,16 @@ export interface Comparator {
         $nin?: string[] | number[];
     };
 }
-export interface Patcher {
+export type Patcher = {
     [filed: string]: any;
 }
-export interface Config {
+export type Config = {
     baseUrl: string;
     url?: string;
-    isSql: boolean;
+    type: AntarestType,
+    timeout?: number
 }
+export type AntarestType = 'antarest' | 'antarest-sql'
 export default class AntarestService<T> {
     private _isSQL;
     protected _server: AxiosInstance;

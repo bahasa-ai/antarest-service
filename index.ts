@@ -1,12 +1,12 @@
 import Axios, { AxiosPromise, AxiosInstance } from 'axios'
 
-export interface AntarestResult<T> {
+export type AntarestResult<T> = {
   status: number,
   message: string,
   payload?: T
 }
 
-export interface Comparator {
+export type Comparator = {
   [field: string]: {
     $eq?: string | number | boolean,
     $gt?: number,
@@ -19,16 +19,18 @@ export interface Comparator {
   }
 }
 
-export interface Patcher {
+export type Patcher = {
   [filed: string]: any
 }
 
-export interface Config {
+export type Config = {
   baseUrl: string,
   url?: string,
-  isSQL: boolean,
+  type: AntarestType
   timeout?: number
 }
+
+export type AntarestType = 'antarest' | 'antarest-sql'
 
 async function ResultHanlder(promise: AxiosPromise<any>, isList: boolean) {
   let p
@@ -57,12 +59,12 @@ async function ResultHanlder(promise: AxiosPromise<any>, isList: boolean) {
   }
 }
 
-function getOptionsId(id: string | number, isSQL: boolean) {
+function getOptionsId(id: string | number, type: AntarestType) {
   let options
 
-  if (this._isSQL) { // SQL
+  if (type === 'antarest-sql') { // PosgrestSQL
     options = { 'id': { '$eq': id } }
-  } else { // mongoose
+  } else if (type === 'antarest') { // mongoose
     options = { '_id': { '$eq': id } }
   }
 
@@ -70,15 +72,15 @@ function getOptionsId(id: string | number, isSQL: boolean) {
 }
 
 export default class AntarestService<T> {
-  private _isSQL: boolean
   protected _server: AxiosInstance
   protected _baseUrl: string
   protected _url: string
+  protected _type: AntarestType
 
   constructor(config: Config) {
     this._baseUrl = config.baseUrl
     this._url = config.url ? config.url : ''
-    this._isSQL = config.isSQL
+    this._type = config.type
 
     this._server = Axios.create({
       baseURL: this._baseUrl,
@@ -120,7 +122,7 @@ export default class AntarestService<T> {
 
   // Manipulate by Id
   public async getById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.get(getOptionsId(id, this._isSQL))
+    const promise = await this.get(getOptionsId(id, this._type))
 
     return {
       status: promise.status,
@@ -130,7 +132,7 @@ export default class AntarestService<T> {
   }
 
   public async updateById(id: number | string, patch: object): Promise<AntarestResult<T>> {
-    const promise = await this.update(getOptionsId(id, this._isSQL), patch)
+    const promise = await this.update(getOptionsId(id, this._type), patch)
 
     return {
       status: promise.status,
@@ -140,7 +142,7 @@ export default class AntarestService<T> {
   }
 
   public async deleteById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.delete(getOptionsId(id, this._isSQL))
+    const promise = await this.delete(getOptionsId(id, this._type))
 
     return {
       status: promise.status,
@@ -151,7 +153,7 @@ export default class AntarestService<T> {
 
   // Specific SQL function
   public async query(query: object): Promise<AntarestResult<T[]>> {
-    if (!this._isSQL) {
+    if (this._type === 'antarest-sql') {
       return {
         status: 403,
         message: 'Forbidden operation for SQL database',
@@ -166,7 +168,7 @@ export default class AntarestService<T> {
 
   // Specific noSQL function
   public async aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>> {
-    if (this._isSQL) {
+    if (this._type === 'antarest') {
       return {
         status: 403,
         message: 'Forbidden operation for noSQL database',

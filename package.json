@@ -1,6 +1,6 @@
 {
   "name": "antarest-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Service enable antarest and antarest-sql",
   "main": "index.js",
   "scripts": {
