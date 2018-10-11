@@ -2,7 +2,7 @@ import Axios, { AxiosPromise, AxiosInstance } from 'axios'
 
 export type AntarestResult<T> = {
   status: number,
-  message: string,
+  msg: string,
   payload?: T
 }
 
@@ -37,7 +37,7 @@ export type Query = {
 
 export type AntarestType = 'antarest' | 'antarest-sql' | 'other'
 
-async function ResultHanlder(promise: AxiosPromise<any>, isList: boolean) {
+export async function AxiosPromiseTranslator<T>(promise: AxiosPromise<any>, isList: boolean): Promise<AntarestResult<T>> {
   let p
 
   try {
@@ -45,20 +45,20 @@ async function ResultHanlder(promise: AxiosPromise<any>, isList: boolean) {
     if (p.status === 200) {
       return {
         status: p.data.status,
-        message: p.data.msg,
+        msg: p.data.msg,
         payload: isList ? p.data.payload : p.data.payload[0]
       }
     }
 
     return {
       status: p.status,
-      message: p.statusText,
+      msg: p.statusText,
       payload: undefined
     }
   } catch (error) {
     return {
       status: 500,
-      message: 'Unexpected request error',
+      msg: 'Unexpected request error',
       payload: undefined
     }
   }
@@ -102,7 +102,7 @@ export default class AntarestService<T> {
   // Common method
   public async create(objectType: T): Promise<AntarestResult<T>> {
     const promise = this._server.post(this._url, objectType)
-    return await ResultHanlder(promise, false)
+    return await AxiosPromiseTranslator<T>(promise, false)
   }
 
   public async get(options?: Comparator): Promise<AntarestResult<T[]>> {
@@ -114,17 +114,17 @@ export default class AntarestService<T> {
       promise = this._server.get(this._url)
     }
 
-    return await ResultHanlder(promise, true)
+    return await AxiosPromiseTranslator<T[]>(promise, true)
   }
 
   public async update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>> {
     const promise = this._server.patch(this._url, { conditions, patch })
-    return ResultHanlder(promise, true)
+    return AxiosPromiseTranslator<T[]>(promise, true)
   }
 
   public async delete(conditions: Comparator): Promise<AntarestResult<T[]>> {
     const promise = this._server.patch(this._url, { conditions, patch: { deletedAt: Date.now() } })
-    return await ResultHanlder(promise, true)
+    return await AxiosPromiseTranslator<T[]>(promise, true)
   }
 
   // Manipulate by Id
@@ -133,7 +133,7 @@ export default class AntarestService<T> {
 
     return {
       status: promise.status,
-      message: promise.message,
+      msg: promise.msg,
       payload: promise.payload ? promise.payload[0] : undefined
     }
   }
@@ -143,7 +143,7 @@ export default class AntarestService<T> {
 
     return {
       status: promise.status,
-      message: promise.message,
+      msg: promise.msg,
       payload: promise.payload ? promise.payload[0] : undefined
     }
   }
@@ -153,38 +153,37 @@ export default class AntarestService<T> {
 
     return {
       status: promise.status,
-      message: promise.message,
+      msg: promise.msg,
       payload: promise.payload ? promise.payload[0] : undefined
     }
   }
 
   // Specific SQL function
   public async query(query: Query): Promise<AntarestResult<T[]>> {
-    if (this._type === 'antarest-sql' || this._type === 'other') {
+    if (this._type === 'antarest-sql') {
+      const promise = this._server.post(this._url, query)
+      return await AxiosPromiseTranslator<T[]>(promise, true)
+    } else {
       return {
         status: 403,
-        message: 'Forbidden operation for SQL database or Other Service',
+        msg: 'Forbidden operation for SQL database or Other Service',
         payload: undefined
       }
     }
-
-    const promise = this._server.post(this._url, query)
-
-    return await ResultHanlder(promise, true)
   }
 
   // Specific noSQL function
   public async aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>> {
-    if (this._type === 'antarest' || this._type === 'other') {
+    if (this._type === 'antarest') {
+      const promise = this._server.post(this._url, aggregator)
+      return await AxiosPromiseTranslator<T[]>(promise, true)
+    } else {
       return {
         status: 403,
-        message: 'Forbidden operation for noSQL database or Other Service',
+        msg: 'Forbidden operation for noSQL database or Other Service',
         payload: undefined
       }
     }
 
-    const promise = this._server.post(this._url, aggregator)
-
-    return await ResultHanlder(promise, true)
   }
 }

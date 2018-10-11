@@ -20,7 +20,7 @@ Result Object:
 ```
 {
     status: 200,
-    message: 'Ok'
+    msg: 'Ok'
     payload: T
 }
 ```

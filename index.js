@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var axios_1 = require("axios");
-function ResultHanlder(promise, isList) {
+function AxiosPromiseTranslator(promise, isList) {
     return __awaiter(this, void 0, void 0, function () {
         var p, error_1;
         return __generator(this, function (_a) {
@@ -49,20 +49,20 @@ function ResultHanlder(promise, isList) {
                     if (p.status === 200) {
                         return [2 /*return*/, {
                                 status: p.data.status,
-                                message: p.data.msg,
+                                msg: p.data.msg,
                                 payload: isList ? p.data.payload : p.data.payload[0]
                             }];
                     }
                     return [2 /*return*/, {
                             status: p.status,
-                            message: p.statusText,
+                            msg: p.statusText,
                             payload: undefined
                         }];
                 case 2:
                     error_1 = _a.sent();
                     return [2 /*return*/, {
                             status: 500,
-                            message: 'Unexpected request error',
+                            msg: 'Unexpected request error',
                             payload: undefined
                         }];
                 case 3: return [2 /*return*/];
@@ -70,6 +70,7 @@ function ResultHanlder(promise, isList) {
         });
     });
 }
+exports.AxiosPromiseTranslator = AxiosPromiseTranslator;
 function getOptionsId(id, isSQL) {
     var options;
     if (isSQL) { // PosgrestSQL
@@ -103,7 +104,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.post(this._url, objectType);
-                        return [4 /*yield*/, ResultHanlder(promise, false)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, false)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -121,7 +122,7 @@ var AntarestService = /** @class */ (function () {
                         else {
                             promise = this._server.get(this._url);
                         }
-                        return [4 /*yield*/, ResultHanlder(promise, true)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -132,7 +133,7 @@ var AntarestService = /** @class */ (function () {
             var promise;
             return __generator(this, function (_a) {
                 promise = this._server.patch(this._url, { conditions: conditions, patch: patch });
-                return [2 /*return*/, ResultHanlder(promise, true)];
+                return [2 /*return*/, AxiosPromiseTranslator(promise, true)];
             });
         });
     };
@@ -143,7 +144,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: Date.now() } });
-                        return [4 /*yield*/, ResultHanlder(promise, true)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -160,7 +161,7 @@ var AntarestService = /** @class */ (function () {
                         promise = _a.sent();
                         return [2 /*return*/, {
                                 status: promise.status,
-                                message: promise.message,
+                                msg: promise.msg,
                                 payload: promise.payload ? promise.payload[0] : undefined
                             }];
                 }
@@ -177,7 +178,7 @@ var AntarestService = /** @class */ (function () {
                         promise = _a.sent();
                         return [2 /*return*/, {
                                 status: promise.status,
-                                message: promise.message,
+                                msg: promise.msg,
                                 payload: promise.payload ? promise.payload[0] : undefined
                             }];
                 }
@@ -194,7 +195,7 @@ var AntarestService = /** @class */ (function () {
                         promise = _a.sent();
                         return [2 /*return*/, {
                                 status: promise.status,
-                                message: promise.message,
+                                msg: promise.msg,
                                 payload: promise.payload ? promise.payload[0] : undefined
                             }];
                 }
@@ -208,16 +209,15 @@ var AntarestService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this._type === 'antarest-sql' || this._type === 'other') {
-                            return [2 /*return*/, {
-                                    status: 403,
-                                    message: 'Forbidden operation for SQL database or Other Service',
-                                    payload: undefined
-                                }];
-                        }
+                        if (!(this._type === 'antarest-sql')) return [3 /*break*/, 2];
                         promise = this._server.post(this._url, query);
-                        return [4 /*yield*/, ResultHanlder(promise, true)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/, {
+                            status: 403,
+                            msg: 'Forbidden operation for SQL database or Other Service',
+                            payload: undefined
+                        }];
                 }
             });
         });
@@ -229,16 +229,15 @@ var AntarestService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        if (this._type === 'antarest' || this._type === 'other') {
-                            return [2 /*return*/, {
-                                    status: 403,
-                                    message: 'Forbidden operation for noSQL database or Other Service',
-                                    payload: undefined
-                                }];
-                        }
+                        if (!(this._type === 'antarest')) return [3 /*break*/, 2];
                         promise = this._server.post(this._url, aggregator);
-                        return [4 /*yield*/, ResultHanlder(promise, true)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
+                    case 2: return [2 /*return*/, {
+                            status: 403,
+                            msg: 'Forbidden operation for noSQL database or Other Service',
+                            payload: undefined
+                        }];
                 }
             });
         });
