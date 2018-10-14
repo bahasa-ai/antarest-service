@@ -68,21 +68,31 @@ class CatHome {
 
 const catHome: CatHome = new CatHome()
 
-let tom = catHome.Cat.get({
+let tomPromise = catHome.Cat.get({
     name: { $eq: Tom }
 })
 
+console.log(tomPromise)
+
+//  { 
+//    status: 200,
+//    msg: 'OK',
+//    payload: 
+//    [ 
+//      {
+//        name: Tom,
+//        weight: 200
+//      }
+//    ]
+//  }
+
+let tom: Cat = tomPromise.payload[0]
+
 console.log(tom)
 
-// { 
-//   status: 200,
-//   msg: 'OK',
-//   payload:[ 
-//       {
-//           name: Tom,
-//           weight: 200
-//       }
-//   ]
-// }
+//  {
+//    name: Tom,
+//    weight: 200
+//  }
 
 ```
