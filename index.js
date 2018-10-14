@@ -261,7 +261,7 @@ var AntarestService = /** @class */ (function () {
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2: return [2 /*return*/, {
                             status: 403,
-                            msg: 'Forbidden operation for non antarest service',
+                            msg: 'Forbidden operation for non antarest microservice',
                             payload: undefined
                         }];
                 }

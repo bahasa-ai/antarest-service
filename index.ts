@@ -204,7 +204,7 @@ export default class AntarestService<T> {
     } else {
       return {
         status: 403,
-        msg: 'Forbidden operation for non antarest service',
+        msg: 'Forbidden operation for non antarest microservice',
         payload: undefined
       }
     }
