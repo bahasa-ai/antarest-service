@@ -32,18 +32,18 @@ export type Query = {
 export type AntarestType = 'antarest' | 'antarest-sql' | 'other'
 export function AxiosPromiseTranslator<T>(promise: AxiosPromise<any>, isList: boolean): Promise<AntarestResult<T>>
 export default class AntarestService<T> {
-  private _isSQL;
-  protected _server: AxiosInstance;
-  protected _baseUrl: string;
-  protected _url: string;
-  constructor(config: Config);
-  create(objectType: T): Promise<AntarestResult<T>>;
-  get(options?: Comparator): Promise<AntarestResult<T[]>>;
-  update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>>;
-  delete(conditions: Comparator): Promise<AntarestResult<T[]>>;
-  getById(id: number | string): Promise<AntarestResult<T>>;
-  updateById(id: number | string, patch: object): Promise<AntarestResult<T>>;
-  deleteById(id: number | string): Promise<AntarestResult<T>>;
-  query(query: object): Promise<AntarestResult<T[]>>;
-  aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>>;
+  private _isSQL
+  protected _server: AxiosInstance
+  protected _baseUrl: string
+  protected _url: string
+  constructor(config: Config)
+  create(objectType: T): Promise<AntarestResult<T[]>>
+  get(options?: Comparator): Promise<AntarestResult<T[]>>
+  update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>>
+  delete(conditions: Comparator): Promise<AntarestResult<T[]>>
+  getById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>>
+  updateById(id: number | string, patch: object, identifier?: string): Promise<AntarestResult<T[]>>
+  deleteById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>>
+  query(query: object): Promise<AntarestResult<T[]>>
+  aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>>
 }

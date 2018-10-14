@@ -35,7 +35,7 @@ export type Query = {
   query: string
 }
 
-export type AntarestType = 'antarest' | 'antarest-sql' | 'other'
+export type AntarestType = 'antarest' | 'antarest-sql' | 'antarest-dynamo' | 'other'
 
 export async function AxiosPromiseTranslator<T>(promise: AxiosPromise<any>, isList: boolean): Promise<AntarestResult<T>> {
   let p
@@ -64,8 +64,14 @@ export async function AxiosPromiseTranslator<T>(promise: AxiosPromise<any>, isLi
   }
 }
 
-function getOptionsId(id: string | number, isSQL: boolean) {
+function getOptionsId(id: string | number, isSQL: boolean, identifier?: string) {
   let options
+
+  if (identifier) {
+    return {
+      identifier: {'$eq': id}
+    }
+  }
 
   if (isSQL) { // PosgrestSQL
     options = { 'id': { '$eq': id } }
@@ -100,9 +106,9 @@ export default class AntarestService<T> {
   }
 
   // Common method
-  public async create(objectType: T): Promise<AntarestResult<T>> {
+  public async create(objectType: T): Promise<AntarestResult<T[]>> {
     const promise = this._server.post(this._url, objectType)
-    return await AxiosPromiseTranslator<T>(promise, false)
+    return await AxiosPromiseTranslator<T[]>(promise, true)
   }
 
   public async get(options?: Comparator): Promise<AntarestResult<T[]>> {
@@ -128,33 +134,51 @@ export default class AntarestService<T> {
   }
 
   // Manipulate by Id
-  public async getById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.get(getOptionsId(id, this._isSQL))
+  public async getById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>> {
+    let promise
+
+    if (identifier) {
+      promise = await this.get(getOptionsId(id, this._isSQL, identifier))
+    } else {
+      promise = await this.get(getOptionsId(id, this._isSQL))
+    }
 
     return {
       status: promise.status,
       msg: promise.msg,
-      payload: promise.payload ? promise.payload[0] : undefined
+      payload: promise.payload
     }
   }
 
-  public async updateById(id: number | string, patch: object): Promise<AntarestResult<T>> {
-    const promise = await this.update(getOptionsId(id, this._isSQL), patch)
+  public async updateById(id: number | string, patch: object, identifier?: string): Promise<AntarestResult<T[]>> {
+    let promise
+
+    if (identifier) {
+      promise = await this.update(getOptionsId(id, this._isSQL, identifier), patch)
+    } else {
+      promise = await this.update(getOptionsId(id, this._isSQL), patch)
+    }
 
     return {
       status: promise.status,
       msg: promise.msg,
-      payload: promise.payload ? promise.payload[0] : undefined
+      payload: promise.payload
     }
   }
 
-  public async deleteById(id: number | string): Promise<AntarestResult<T>> {
-    const promise = await this.delete(getOptionsId(id, this._isSQL))
+  public async deleteById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>> {
+    let promise
+
+    if (identifier) {
+      promise = await this.delete(getOptionsId(id, this._isSQL, identifier))
+    } else {
+      promise = await this.delete(getOptionsId(id, this._isSQL))
+    }
 
     return {
       status: promise.status,
       msg: promise.msg,
-      payload: promise.payload ? promise.payload[0] : undefined
+      payload: promise.payload
     }
   }
 
@@ -166,7 +190,7 @@ export default class AntarestService<T> {
     } else {
       return {
         status: 403,
-        msg: 'Forbidden operation for SQL database or Other Service',
+        msg: 'Forbidden operation for non antarest-sql microservice',
         payload: undefined
       }
     }
@@ -180,7 +204,7 @@ export default class AntarestService<T> {
     } else {
       return {
         status: 403,
-        msg: 'Forbidden operation for noSQL database or Other Service',
+        msg: 'Forbidden operation for non antarest service',
         payload: undefined
       }
     }

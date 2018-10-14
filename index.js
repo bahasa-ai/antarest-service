@@ -71,8 +71,13 @@ function AxiosPromiseTranslator(promise, isList) {
     });
 }
 exports.AxiosPromiseTranslator = AxiosPromiseTranslator;
-function getOptionsId(id, isSQL) {
+function getOptionsId(id, isSQL, identifier) {
     var options;
+    if (identifier) {
+        return {
+            identifier: { '$eq': id }
+        };
+    }
     if (isSQL) { // PosgrestSQL
         options = { 'id': { '$eq': id } };
     }
@@ -104,7 +109,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.post(this._url, objectType);
-                        return [4 /*yield*/, AxiosPromiseTranslator(promise, false)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
@@ -151,53 +156,74 @@ var AntarestService = /** @class */ (function () {
         });
     };
     // Manipulate by Id
-    AntarestService.prototype.getById = function (id) {
+    AntarestService.prototype.getById = function (id, identifier) {
         return __awaiter(this, void 0, void 0, function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.get(getOptionsId(id, this._isSQL))];
+                    case 0:
+                        if (!identifier) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.get(getOptionsId(id, this._isSQL, identifier))];
                     case 1:
                         promise = _a.sent();
-                        return [2 /*return*/, {
-                                status: promise.status,
-                                msg: promise.msg,
-                                payload: promise.payload ? promise.payload[0] : undefined
-                            }];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.get(getOptionsId(id, this._isSQL))];
+                    case 3:
+                        promise = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, {
+                            status: promise.status,
+                            msg: promise.msg,
+                            payload: promise.payload
+                        }];
                 }
             });
         });
     };
-    AntarestService.prototype.updateById = function (id, patch) {
+    AntarestService.prototype.updateById = function (id, patch, identifier) {
         return __awaiter(this, void 0, void 0, function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.update(getOptionsId(id, this._isSQL), patch)];
+                    case 0:
+                        if (!identifier) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.update(getOptionsId(id, this._isSQL, identifier), patch)];
                     case 1:
                         promise = _a.sent();
-                        return [2 /*return*/, {
-                                status: promise.status,
-                                msg: promise.msg,
-                                payload: promise.payload ? promise.payload[0] : undefined
-                            }];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.update(getOptionsId(id, this._isSQL), patch)];
+                    case 3:
+                        promise = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, {
+                            status: promise.status,
+                            msg: promise.msg,
+                            payload: promise.payload
+                        }];
                 }
             });
         });
     };
-    AntarestService.prototype.deleteById = function (id) {
+    AntarestService.prototype.deleteById = function (id, identifier) {
         return __awaiter(this, void 0, void 0, function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL))];
+                    case 0:
+                        if (!identifier) return [3 /*break*/, 2];
+                        return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL, identifier))];
                     case 1:
                         promise = _a.sent();
-                        return [2 /*return*/, {
-                                status: promise.status,
-                                msg: promise.msg,
-                                payload: promise.payload ? promise.payload[0] : undefined
-                            }];
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL))];
+                    case 3:
+                        promise = _a.sent();
+                        _a.label = 4;
+                    case 4: return [2 /*return*/, {
+                            status: promise.status,
+                            msg: promise.msg,
+                            payload: promise.payload
+                        }];
                 }
             });
         });
@@ -215,7 +241,7 @@ var AntarestService = /** @class */ (function () {
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2: return [2 /*return*/, {
                             status: 403,
-                            msg: 'Forbidden operation for SQL database or Other Service',
+                            msg: 'Forbidden operation for non antarest-sql microservice',
                             payload: undefined
                         }];
                 }
@@ -235,7 +261,7 @@ var AntarestService = /** @class */ (function () {
                     case 1: return [2 /*return*/, _a.sent()];
                     case 2: return [2 /*return*/, {
                             status: 403,
-                            msg: 'Forbidden operation for noSQL database or Other Service',
+                            msg: 'Forbidden operation for non antarest service',
                             payload: undefined
                         }];
                 }
