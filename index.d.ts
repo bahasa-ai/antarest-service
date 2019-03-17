@@ -1,8 +1,9 @@
-import { AxiosInstance, AxiosPromise } from 'axios';
+import { AxiosInstance, AxiosPromise } from 'axios'
 export type AntarestResult<T> = {
   status: number;
   msg: string;
   payload?: T;
+  error?: any;
 }
 export type Comparator = {
   [field: string]: {
