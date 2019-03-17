@@ -63,7 +63,8 @@ function AxiosPromiseTranslator(promise, isList) {
                     return [2 /*return*/, {
                             status: 500,
                             msg: 'Unexpected request error',
-                            payload: undefined
+                            payload: undefined,
+                            error: error_1
                         }];
                 case 3: return [2 /*return*/];
             }

@@ -3,7 +3,8 @@ import Axios, { AxiosPromise, AxiosInstance } from 'axios'
 export type AntarestResult<T> = {
   status: number,
   msg: string,
-  payload?: T
+  payload?: T,
+  error?: any
 }
 
 export type Comparator = {
@@ -59,7 +60,8 @@ export async function AxiosPromiseTranslator<T>(promise: AxiosPromise<any>, isLi
     return {
       status: 500,
       msg: 'Unexpected request error',
-      payload: undefined
+      payload: undefined,
+      error
     }
   }
 }
