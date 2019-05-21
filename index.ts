@@ -131,7 +131,7 @@ export default class AntarestService<T> {
   }
 
   public async delete(conditions: Comparator): Promise<AntarestResult<T[]>> {
-    const promise = this._server.patch(this._url, { conditions, patch: { deletedAt: Date.now() } })
+    const promise = this._server.patch(this._url, { conditions, patch: { deletedAt: new Date() } })
     return await AxiosPromiseTranslator<T[]>(promise, true)
   }
 

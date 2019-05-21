@@ -149,7 +149,7 @@ var AntarestService = /** @class */ (function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: Date.now() } });
+                        promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: new Date() } });
                         return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }

@@ -1,6 +1,12 @@
 # Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
+__v2.1.1__:
+- Bug fix delete function
+
+__v2.1.0__:
+- Return error Object
+
 __v2.0.0__:
 - All CRUD action will return array of T for consistency
 - Add new type antarest-dynamo
