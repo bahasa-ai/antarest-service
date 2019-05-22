@@ -41,10 +41,10 @@ export default class AntarestService<T> {
   create(objectType: T): Promise<AntarestResult<T[]>>
   get(options?: Comparator): Promise<AntarestResult<T[]>>
   update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>>
-  delete(conditions: Comparator, hardDeleted?: boolean): Promise<AntarestResult<T[]>>
+  delete(conditions: Comparator, hardDelete?: boolean): Promise<AntarestResult<T[]>>
   getById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>>
   updateById(id: number | string, patch: object, identifier?: string): Promise<AntarestResult<T[]>>
-  deleteById(id: number | string, hardDeleted?: boolean, identifier?: string): Promise<AntarestResult<T[]>>
+  deleteById(id: number | string, hardDelete?: boolean, identifier?: string): Promise<AntarestResult<T[]>>
   query(query: object): Promise<AntarestResult<T[]>>
   aggregate(aggregator: Comparator[]): Promise<AntarestResult<T[]>>
 }
