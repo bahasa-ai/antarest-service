@@ -1,6 +1,9 @@
 # Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
+__v2.1.3__:
+- Fix typo index.d.ts
+
 __v2.1.2__:
 - Options to hard delete
 
