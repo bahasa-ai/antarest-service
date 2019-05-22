@@ -71,7 +71,7 @@ function getOptionsId(id: string | number, isSQL: boolean, identifier?: string) 
 
   if (identifier) {
     return {
-      identifier: {'$eq': id}
+      identifier: { '$eq': id }
     }
   }
 
@@ -130,8 +130,15 @@ export default class AntarestService<T> {
     return AxiosPromiseTranslator<T[]>(promise, true)
   }
 
-  public async delete(conditions: Comparator): Promise<AntarestResult<T[]>> {
-    const promise = this._server.patch(this._url, { conditions, patch: { deletedAt: new Date() } })
+  public async delete(conditions: Comparator, hardDelete: boolean = false): Promise<AntarestResult<T[]>> {
+
+    let promise
+    if (!hardDelete) {
+      promise = this._server.patch(this._url, { conditions, patch: { deletedAt: new Date() } })
+    } else {
+      promise = this._server.delete(this._url, { data: { conditions } })
+    }
+
     return await AxiosPromiseTranslator<T[]>(promise, true)
   }
 
@@ -168,13 +175,13 @@ export default class AntarestService<T> {
     }
   }
 
-  public async deleteById(id: number | string, identifier?: string): Promise<AntarestResult<T[]>> {
+  public async deleteById(id: number | string, hardDelete: boolean = false, identifier?: string): Promise<AntarestResult<T[]>> {
     let promise
 
     if (identifier) {
-      promise = await this.delete(getOptionsId(id, this._isSQL, identifier))
+      promise = await this.delete(getOptionsId(id, this._isSQL, identifier), hardDelete)
     } else {
-      promise = await this.delete(getOptionsId(id, this._isSQL))
+      promise = await this.delete(getOptionsId(id, this._isSQL), hardDelete)
     }
 
     return {

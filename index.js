@@ -143,13 +143,19 @@ var AntarestService = /** @class */ (function () {
             });
         });
     };
-    AntarestService.prototype.delete = function (conditions) {
+    AntarestService.prototype.delete = function (conditions, hardDelete) {
+        if (hardDelete === void 0) { hardDelete = false; }
         return __awaiter(this, void 0, void 0, function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: new Date() } });
+                        if (!hardDelete) {
+                            promise = this._server.patch(this._url, { conditions: conditions, patch: { deletedAt: new Date() } });
+                        }
+                        else {
+                            promise = this._server.delete(this._url, { data: { conditions: conditions } });
+                        }
                         return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
@@ -205,18 +211,19 @@ var AntarestService = /** @class */ (function () {
             });
         });
     };
-    AntarestService.prototype.deleteById = function (id, identifier) {
+    AntarestService.prototype.deleteById = function (id, hardDelete, identifier) {
+        if (hardDelete === void 0) { hardDelete = false; }
         return __awaiter(this, void 0, void 0, function () {
             var promise;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         if (!identifier) return [3 /*break*/, 2];
-                        return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL, identifier))];
+                        return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL, identifier), hardDelete)];
                     case 1:
                         promise = _a.sent();
                         return [3 /*break*/, 4];
-                    case 2: return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL))];
+                    case 2: return [4 /*yield*/, this.delete(getOptionsId(id, this._isSQL), hardDelete)];
                     case 3:
                         promise = _a.sent();
                         _a.label = 4;
