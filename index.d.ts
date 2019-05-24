@@ -38,7 +38,7 @@ export default class AntarestService<T> {
   protected _baseUrl: string
   protected _url: string
   constructor(config: Config)
-  create(objectType: T): Promise<AntarestResult<T[]>>
+  create(objectType: T): Promise<AntarestResult<T>>
   get(options?: Comparator): Promise<AntarestResult<T[]>>
   update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>>
   delete(conditions: Comparator, hardDelete?: boolean): Promise<AntarestResult<T[]>>

@@ -1,6 +1,9 @@
 # Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
+__v2.1.4__:
+- Create return object
+
 __v2.1.3__:
 - Fix typo index.d.ts
 
