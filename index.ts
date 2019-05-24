@@ -110,7 +110,7 @@ export default class AntarestService<T> {
   // Common method
   public async create(objectType: T): Promise<AntarestResult<T>> {
     const promise = this._server.post(this._url, objectType)
-    return await AxiosPromiseTranslator<T>(promise, false)
+    return await AxiosPromiseTranslator<T>(promise, true)
   }
 
   public async get(options?: Comparator): Promise<AntarestResult<T[]>> {

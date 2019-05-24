@@ -1,6 +1,9 @@
 # Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
+__v2.1.5__:
+- Bug fix return create
+
 __v2.1.4__:
 - Create return object
 
@@ -46,7 +49,7 @@ Result Object:
 ```
 
 ## Functions:
-- create(objectType: T): Promise<AntarestResult<T[]>>;
+- create(objectType: T): Promise<AntarestResult<T>>;
 - get(options?: Comparator): Promise<AntarestResult<T[]>>;
 - update(conditions: Comparator, patch: Patcher): Promise<AntarestResult<T[]>>;
 - delete(conditions: Comparator, hardDelete?: boolean): Promise<AntarestResult<T[]>>;

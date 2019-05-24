@@ -110,7 +110,7 @@ var AntarestService = /** @class */ (function () {
                 switch (_a.label) {
                     case 0:
                         promise = this._server.post(this._url, objectType);
-                        return [4 /*yield*/, AxiosPromiseTranslator(promise, false)];
+                        return [4 /*yield*/, AxiosPromiseTranslator(promise, true)];
                     case 1: return [2 /*return*/, _a.sent()];
                 }
             });
