@@ -1,6 +1,9 @@
 # Antarest Service
 Simple enabler for [antarest](https://github.com/bahasa-ai/antarest) and [antarest-sql](https://github.com/bahasa-ai/antarest-sql)
 
+__v2.1.6__:
+- Npm audit fix
+
 __v2.1.5__:
 - Bug fix return create
 
